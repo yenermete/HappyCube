@@ -71,23 +71,23 @@ public class TestCubeUtil extends TestCase {
 
 	@Test
 	public void testRotateSymmetricTwiceEqualsOriginal() {
-		int x = ((int) (Math.random() * Math.pow(2, CubeConstants.TILE_LENGTH))) - 1;
+		int x = (int) (Math.random() * CubeConstants.FLAT_EDGE);
 		assertEquals(x, CubeUtil.rotateSymmetric(CubeUtil.rotateSymmetric(x)));
 	}
 
 	@Test
-	public void testConvertEdgeToStringAllOnes() {
-		assertEquals("00000", CubeUtil.convertEdgeToString(31));
+	public void testConvertEdgeToStringPrintingAllOnes() {
+		assertEquals("00000", CubeUtil.convertEdgeToStringForPrinting(31));
 	}
 
 	@Test
-	public void testConvertEdgeToStringAllZeros() {
-		assertEquals("     ", CubeUtil.convertEdgeToString(0));
+	public void testConvertEdgeToStringPrintingAllZeros() {
+		assertEquals("     ", CubeUtil.convertEdgeToStringForPrinting(0));
 	}
 
 	@Test
-	public void testConvertEdgeToStringZerosAndOnesMixed() {
-		assertEquals(" 0000", CubeUtil.convertEdgeToString(15));
+	public void testConvertEdgeToStringPrintingZerosAndOnesMixed() {
+		assertEquals(" 0000", CubeUtil.convertEdgeToStringForPrinting(15));
 	}
 
 	@Test

@@ -8,8 +8,6 @@ import com.cube.util.CubeUtil;
 
 import static com.cube.constants.CubeConstants.MIDDLE_ALL_ONES;
 import static com.cube.constants.CubeConstants.NOT_NULL;
-import static com.cube.util.CubeUtil.getGreatestDigit;
-import static com.cube.util.CubeUtil.getLowestDigit;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -33,12 +31,6 @@ public class CubeServiceImpl implements CubeService {
 			if (!isVertexMatching(vertext)) {
 				return false;
 			}
-		}
-		// All six surfaces must be valid
-		if (!isValidSurface(cube.getBottom()) || !isValidSurface(cube.getFront()) || !isValidSurface(cube.getLeft())
-				|| !isValidSurface(cube.getRear()) || !isValidSurface(cube.getRear())
-				|| !isValidSurface(cube.getTop())) {
-			return false;
 		}
 		if (!edgesMatchInTheMiddle(cube.getRear().getBottom(), cube.getBottom().getTop())
 				|| !edgesMatchInTheMiddle(cube.getRear().getLeft(), cube.getLeft().getTop())
@@ -65,21 +57,8 @@ public class CubeServiceImpl implements CubeService {
 	}
 
 	@Override
-	public boolean isValidSurface(Surface surface) {
-		// Highest digit of one edge must be equal to the lowest digit of an
-		// adjacent edge
-		if (getGreatestDigit(surface.getBottom()) != getLowestDigit(surface.getLeft())
-				|| getLowestDigit(surface.getBottom()) != getLowestDigit(surface.getRight())
-				|| getLowestDigit(surface.getTop()) != getGreatestDigit(surface.getRight())
-				|| getGreatestDigit(surface.getTop()) != getGreatestDigit(surface.getLeft())) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public boolean isVertexMatching(Vertex vertext) {
-		return vertext.getX() + vertext.getY() + vertext.getZ() == 1;
+	public boolean isVertexMatching(Vertex vertex) {
+		return vertex.getX() + vertex.getY() + vertex.getZ() == 1;
 	}
 
 	@Override
@@ -115,7 +94,7 @@ public class CubeServiceImpl implements CubeService {
 			}
 
 		} catch (IOException e) {
-			throw new RuntimeException("Cueb could not be written to file!", e);
+			throw new RuntimeException("Cube could not be written to file!", e);
 		}
 	}
 
@@ -123,16 +102,16 @@ public class CubeServiceImpl implements CubeService {
 		// A lot of conversions exist here because solution is required with
 		// zeros and space instead of ones and zeros
 		String[] result = new String[CubeConstants.TILE_LENGTH];
-		result[0] = CubeUtil.convertEdgeToString(surface.getTop());
-		result[CubeConstants.TILE_LENGTH - 1] = CubeUtil.convertEdgeToString(surface.getBottom());
+		result[0] = CubeUtil.convertEdgeToStringForPrinting(surface.getTop());
+		result[CubeConstants.TILE_LENGTH - 1] = CubeUtil.convertEdgeToStringForPrinting(surface.getBottom());
 		for (int i = 1; i < CubeConstants.TILE_LENGTH - 1; i++) {
-			result[i] = new StringBuilder().append(getMidTileValue(surface.getLeft(), i)).append(midZeros)
-					.append(getMidTileValue(surface.getRight(), i)).toString();
+			result[i] = new StringBuilder().append(getInteriorTileValue(surface.getLeft(), i)).append(midZeros)
+					.append(getInteriorTileValue(surface.getRight(), i)).toString();
 		}
 		return result;
 	}
 
-	private String getMidTileValue(int edge, int shiftLength) {
+	private String getInteriorTileValue(int edge, int shiftLength) {
 		return ((edge << shiftLength) & CubeConstants.HIGH) == CubeConstants.HIGH ? CubeConstants.TILE_FULL
 				: CubeConstants.TILE_EMPTY;
 	}

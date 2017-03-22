@@ -20,9 +20,8 @@ public class Cube {
 	 * A cube will e represented like below
 	 * 		REAR
 	 * LEFT BOTTOM RIGHT
-	 *		FRONT
+	 * 		FRONT
 	 * 		TOP
-	 * 
 	 */
 	public Cube(Surface top, Surface bottom, Surface left, Surface right, Surface rear, Surface front) {
 		this.top = top;
@@ -64,7 +63,8 @@ public class Cube {
 					.append(bottom).append(System.lineSeparator()).append("LEFT_SURFACE: ").append(left)
 					.append(System.lineSeparator()).append("RIGHT_SURFACE: ").append(right)
 					.append(System.lineSeparator()).append("REAR_SURFACE: ").append(rear).append(System.lineSeparator())
-					.append("FRONT_SURFACE: ").append(front).append(System.lineSeparator()).append("VERTICES: ");
+					.append("FRONT_SURFACE: ").append(front).append(System.lineSeparator()).append("VERTICES: ")
+					.append(System.lineSeparator());
 			Arrays.stream(vertices).forEach(v -> builder.append("vertice: ").append(v).append("."));
 			stringValue = builder.toString();
 		}

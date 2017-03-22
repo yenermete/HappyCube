@@ -8,8 +8,6 @@ public interface CubeService {
 
 	public boolean isValidCube(Cube cube);
 
-	public boolean isValidSurface(Surface surface);
-
 	public boolean isVertexMatching(Vertex vertice);
 
 	public void printCube(Cube cube, String fileName);

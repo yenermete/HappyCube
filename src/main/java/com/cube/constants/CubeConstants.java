@@ -14,4 +14,5 @@ public class CubeConstants {
 	public static final String TILE_FULL = "0";
 	public static final String TILE_EMPTY = " ";
 	public static final String NOT_NULL = "%s can not be null!";
+	public static final String DATE_TIME_PATTERN = "YYYYMMdd_HHmmss";
 }

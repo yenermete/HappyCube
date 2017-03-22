@@ -1,5 +1,8 @@
 package com.cube.model;
 
+import static com.cube.util.CubeUtil.getGreatestDigit;
+import static com.cube.util.CubeUtil.getLowestDigit;
+
 import com.cube.constants.CubeConstants;
 
 public class Surface {
@@ -18,7 +21,7 @@ public class Surface {
 		validateEdges();
 	}
 
-	public Surface(String top, String bottom, String left, String right) throws IllegalArgumentException {
+	public Surface(String top, String bottom, String left, String right) {
 		this.top = getStringAsInt(top);
 		this.bottom = getStringAsInt(bottom);
 		this.left = getStringAsInt(left);
@@ -27,27 +30,41 @@ public class Surface {
 	}
 
 	private void validateEdges() {
-		if (allowedEdge(top) && allowedEdge(bottom) && allowedEdge(left) && allowedEdge(right)) {
-			if ((matchesLoneTile(top, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH)
-					&& matchesLoneTile(left, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH))
-					|| (matchesLoneTile(top, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE)
-							&& matchesLoneTile(right, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH))
-					|| (matchesLoneTile(bottom, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH)
-							&& matchesLoneTile(left, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE))
-					|| (matchesLoneTile(bottom, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE)
-							&& matchesLoneTile(right, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE))) {
+		if (edgeNotFlatOrEmpty(top) && edgeNotFlatOrEmpty(bottom) && edgeNotFlatOrEmpty(left) && edgeNotFlatOrEmpty(right)) {
+			if ((cornerMatchesLoneTile(top, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.HIGH)
+					&& cornerMatchesLoneTile(left, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.HIGH))
+					|| (cornerMatchesLoneTile(top, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.ONE)
+							&& cornerMatchesLoneTile(right, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.HIGH))
+					|| (cornerMatchesLoneTile(bottom, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.HIGH)
+							&& cornerMatchesLoneTile(left, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.ONE))
+					|| (cornerMatchesLoneTile(bottom, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.ONE)
+							&& cornerMatchesLoneTile(right, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.ONE))) {
 				throw new IllegalArgumentException("Each tile on a surface must have at least one neighbour!");
+			} else {
+				if (!edgesMatch()) {
+					throw new IllegalArgumentException("Surface edges must be consistent with neighbours!");
+				}
 			}
 		} else {
 			throw new IllegalArgumentException("Surfaces must have no empty or flat edge!");
 		}
 	}
 
-	private boolean matchesLoneTile(int edge, int value, int result) {
+	private boolean edgesMatch() {
+		// Highest digit of one edge must be equal to the lowest digit of an
+		// adjacent edge
+		if (getGreatestDigit(bottom) != getLowestDigit(left) || getLowestDigit(bottom) != getLowestDigit(right)
+				|| getLowestDigit(top) != getGreatestDigit(right) || getGreatestDigit(top) != getGreatestDigit(left)) {
+			return false;
+		}
+		return true;
+	}
+
+	private boolean cornerMatchesLoneTile(int edge, int value, int result) {
 		return (edge & value) == result;
 	}
 
-	private boolean allowedEdge(int edge) {
+	private boolean edgeNotFlatOrEmpty(int edge) {
 		return edge != CubeConstants.FLAT_EDGE && edge != CubeConstants.EMPTY_EDGE;
 	}
 

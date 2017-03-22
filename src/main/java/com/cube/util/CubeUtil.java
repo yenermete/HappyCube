@@ -12,8 +12,8 @@ public class CubeUtil {
 		return x & CubeConstants.LOW;
 	}
 
-	public static String convertEdgeToString(int x) {
-		return getStringValue(x).replaceAll("0", " ").replaceAll("1", "0");
+	public static String convertEdgeToStringForPrinting(int x) {
+		return getStringValue(x).replaceAll("0", CubeConstants.TILE_EMPTY).replaceAll("1", CubeConstants.TILE_FULL);
 	}
 
 	private static StringBuilder getCompletedStringBuilder(int x) {
