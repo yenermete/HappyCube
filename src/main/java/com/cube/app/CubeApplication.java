@@ -1,5 +1,7 @@
 package com.cube.app;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,12 +23,12 @@ public class CubeApplication {
 	private final int maxSurfaceTransformations = 8;
 
 	public CubeApplication() {
-		rear = new Surface("00100", "00100", "00100", "00100");
-		top = new Surface("00100", "00100", "00100", "00100");
-		bottom = new Surface("00100", "00100", "00100", "00100");
-		front = new Surface("00100", "00100", "00100", "00100");
+		rear = new Surface("01010", "11010", "01011", "00100");
+		bottom = new Surface("10101", "10101", "11011", "11011");
+		top = new Surface("00101", "01011", "01010", "11011");
+		front = new Surface("10100", "01010", "11010", "01010");
 		left = new Surface("00100", "00100", "00100", "00100");
-		right = new Surface("00100", "00100", "00100", "00100");
+		right = new Surface("01010", "00100", "00100", "00100");
 		service = new CubeServiceImpl();
 	}
 
@@ -61,12 +63,14 @@ public class CubeApplication {
 		return null;
 	}
 
-	public void printCube(Cube cube) {
+	public void printCube(Cube cube, String folderName) {
 		if (cube == null) {
 			System.out.println("There is no valid cube combination.");
 		} else {
-			System.out.println("Found valid cube. Printing to file.");
-			service.printCube(cube);
+			String outputFile = String.format("%s/%s_%s.%s", folderName, "cube",
+					LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), "txt");
+			System.out.println(String.format("Found valid cube. Printing to %s." , outputFile));
+			service.printCube(cube, outputFile);
 		}
 	}
 

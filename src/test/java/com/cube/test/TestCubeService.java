@@ -120,7 +120,7 @@ public class TestCubeService extends TestCase {
 
 	public void testRotateSurfaceRight() {
 		Surface original = new Surface(2, 3, 8, 7);
-		Surface rotated = new Surface(8, 7, 3, 2);
+		Surface rotated = new Surface(2, 28, 3, 2);
 		assertEquals(rotated, service.rotateSurfaceRight(original));
 	}
 

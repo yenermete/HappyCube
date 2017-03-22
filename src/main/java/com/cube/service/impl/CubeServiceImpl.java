@@ -11,7 +11,17 @@ import static com.cube.constants.CubeConstants.NOT_NULL;
 import static com.cube.util.CubeUtil.getGreatestDigit;
 import static com.cube.util.CubeUtil.getLowestDigit;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Collections;
+
+import com.cube.constants.CubeConstants;
+
 public class CubeServiceImpl implements CubeService {
+
+	private final String emptyPrefix = String.join("", Collections.nCopies(CubeConstants.TILE_LENGTH, " "));
+	private final String midZeros = String.join("", Collections.nCopies(CubeConstants.TILE_LENGTH - 2, "0"));
 
 	@Override
 	public boolean isValidCube(Cube cube) {
@@ -37,11 +47,13 @@ public class CubeServiceImpl implements CubeService {
 				|| !edgesMatchInTheMiddle(cube.getBottom().getLeft(), cube.getLeft().getRight())
 				|| !edgesMatchInTheMiddle(cube.getBottom().getRight(), cube.getRight().getLeft())
 				|| !edgesMatchInTheMiddle(cube.getBottom().getBottom(), cube.getFront().getTop())
-				|| !edgesMatchInTheMiddle(CubeUtil.rotateSymmetric(cube.getFront().getLeft()), cube.getLeft().getBottom())
+				|| !edgesMatchInTheMiddle(CubeUtil.rotateSymmetric(cube.getFront().getLeft()),
+						cube.getLeft().getBottom())
 				|| !edgesMatchInTheMiddle(cube.getFront().getBottom(), cube.getTop().getTop())
 				|| !edgesMatchInTheMiddle(cube.getFront().getRight(), cube.getRight().getBottom())
 				|| !edgesMatchInTheMiddle(CubeUtil.rotateSymmetric(cube.getTop().getLeft()), cube.getLeft().getLeft())
-				|| !edgesMatchInTheMiddle(CubeUtil.rotateSymmetric(cube.getTop().getRight()), cube.getRight().getRight())) {
+				|| !edgesMatchInTheMiddle(CubeUtil.rotateSymmetric(cube.getTop().getRight()),
+						cube.getRight().getRight())) {
 			return false;
 		}
 		return true;
@@ -71,18 +83,67 @@ public class CubeServiceImpl implements CubeService {
 	}
 
 	@Override
-	public void printCube(Cube cube) {
-		// TODO Auto-generated method stub
+	public void printCube(Cube cube, String fileName) {
+		if (cube == null) {
+			throw new IllegalArgumentException(String.format(CubeConstants.NOT_NULL, "cube"));
+		}
+		String[] rowsLeft = getPrintableSurface(cube.getLeft());
+		String[] rowsRight = getPrintableSurface(cube.getRight());
+		String[] rowsBottom = getPrintableSurface(cube.getBottom());
+		String[] rowsRest = new String[3 * CubeConstants.TILE_LENGTH];
+		int index = 0;
+		for (String row : getPrintableSurface(cube.getFront())) {
+			rowsRest[index++] = row;
+		}
+		for (String row : getPrintableSurface(cube.getTop())) {
+			rowsRest[index++] = row;
+		}
+		for (String row : getPrintableSurface(cube.getRear())) {
+			rowsRest[index++] = row;
+		}
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+			for (int i = 0; i < CubeConstants.TILE_LENGTH; i++) {
+				writer.write(rowsLeft[i]);
+				writer.write(rowsBottom[i]);
+				writer.write(rowsRight[i]);
+				writer.newLine();
+			}
+			for (String row : rowsRest) {
+				writer.write(emptyPrefix);
+				writer.write(row);
+				writer.newLine();
+			}
 
+		} catch (IOException e) {
+			throw new RuntimeException("Cueb could not be written to file!", e);
+		}
 	}
 
+	private String[] getPrintableSurface(Surface surface) {
+		// A lot of conversions exist here because solution is required with
+		// zeros and space instead of ones and zeros
+		String[] result = new String[CubeConstants.TILE_LENGTH];
+		result[0] = CubeUtil.convertEdgeToString(surface.getTop());
+		result[CubeConstants.TILE_LENGTH - 1] = CubeUtil.convertEdgeToString(surface.getBottom());
+		for (int i = 1; i < CubeConstants.TILE_LENGTH - 1; i++) {
+			result[i] = new StringBuilder().append(getMidTileValue(surface.getLeft(), i)).append(midZeros)
+					.append(getMidTileValue(surface.getRight(), i)).toString();
+		}
+		return result;
+	}
+
+	private String getMidTileValue(int edge, int shiftLength) {
+		return ((edge << shiftLength) & CubeConstants.HIGH) == CubeConstants.HIGH ? CubeConstants.TILE_FULL
+				: CubeConstants.TILE_EMPTY;
+	}
 
 	@Override
 	public Surface rotateSurfaceRight(Surface surface) {
 		if (surface == null) {
 			throw new IllegalArgumentException(String.format(NOT_NULL, "Surface"));
 		}
-		return new Surface(surface.getLeft(), surface.getRight(), surface.getBottom(), surface.getTop());
+		return new Surface(CubeUtil.rotateSymmetric(surface.getLeft()), CubeUtil.rotateSymmetric(surface.getRight()),
+				surface.getBottom(), surface.getTop());
 	}
 
 	@Override

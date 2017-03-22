@@ -2,6 +2,7 @@ package com.cube.test;
 
 import org.junit.Test;
 
+import com.cube.constants.CubeConstants;
 import com.cube.util.CubeUtil;
 
 import junit.framework.TestCase;
@@ -70,8 +71,32 @@ public class TestCubeUtil extends TestCase {
 
 	@Test
 	public void testRotateSymmetricTwiceEqualsOriginal() {
-		int x = (int) (Math.random() * 100);
+		int x = ((int) (Math.random() * Math.pow(2, CubeConstants.TILE_LENGTH))) - 1;
 		assertEquals(x, CubeUtil.rotateSymmetric(CubeUtil.rotateSymmetric(x)));
 	}
 
+	@Test
+	public void testConvertEdgeToStringAllOnes() {
+		assertEquals("00000", CubeUtil.convertEdgeToString(31));
+	}
+
+	@Test
+	public void testConvertEdgeToStringAllZeros() {
+		assertEquals("     ", CubeUtil.convertEdgeToString(0));
+	}
+
+	@Test
+	public void testConvertEdgeToStringZerosAndOnesMixed() {
+		assertEquals(" 0000", CubeUtil.convertEdgeToString(15));
+	}
+
+	@Test
+	public void testGetStringValuePrefixesZero() {
+		assertEquals("01001", CubeUtil.getStringValue(9));
+	}
+
+	@Test
+	public void testGetStringValueRemainsTheSame() {
+		assertEquals("11001", CubeUtil.getStringValue(25));
+	}
 }

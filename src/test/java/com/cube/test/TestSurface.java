@@ -16,7 +16,7 @@ public class TestSurface extends TestCase {
 		assertEquals(8, surface.getLeft());
 		assertEquals(6, surface.getRight());
 	}
-	
+
 	@Test
 	public void testSurfacesEqualAndHashCodeSame() {
 		Surface first = new Surface("00111", "11000", "01000", "00110");
@@ -32,5 +32,35 @@ public class TestSurface extends TestCase {
 		assertFalse(first.equals(second));
 		assertFalse(first.hashCode() == second.hashCode());
 	}
-	
+
+	@Test
+	public void testFlatEdgeThrowsException() {
+
+	}
+
+	@Test
+	public void testEmptyEdgeThrowsException() {
+
+	}
+
+	@Test
+	public void testInvalidTopRightThrowsException() {
+
+	}
+
+	@Test
+	public void testInvalidTopLeftThrowsException() {
+
+	}
+
+	@Test
+	public void testInvalidBottomRightThrowsException() {
+
+	}
+
+	@Test
+	public void testInvalidBottomLeftThrowsException() {
+
+	}
+
 }

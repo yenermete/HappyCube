@@ -4,10 +4,10 @@ import com.cube.constants.CubeConstants;
 
 public class Surface {
 
-	private int top;
-	private int bottom;
-	private int left;
-	private int right;
+	private final int top;
+	private final int bottom;
+	private final int left;
+	private final int right;
 	private String stringValue;
 
 	public Surface(int top, int bottom, int left, int right) {
@@ -15,6 +15,7 @@ public class Surface {
 		this.bottom = bottom;
 		this.left = left;
 		this.right = right;
+		validateEdges();
 	}
 
 	public Surface(String top, String bottom, String left, String right) throws IllegalArgumentException {
@@ -22,6 +23,32 @@ public class Surface {
 		this.bottom = getStringAsInt(bottom);
 		this.left = getStringAsInt(left);
 		this.right = getStringAsInt(right);
+		validateEdges();
+	}
+
+	private void validateEdges() {
+		if (allowedEdge(top) && allowedEdge(bottom) && allowedEdge(left) && allowedEdge(right)) {
+			if ((matchesLoneTile(top, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH)
+					&& matchesLoneTile(left, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH))
+					|| (matchesLoneTile(top, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE)
+							&& matchesLoneTile(right, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH))
+					|| (matchesLoneTile(bottom, CubeConstants.TWO_TILES_IN_THE_END, CubeConstants.HIGH)
+							&& matchesLoneTile(left, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE))
+					|| (matchesLoneTile(bottom, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE)
+							&& matchesLoneTile(right, CubeConstants.TWO_TILES_IN_THE_BEGINNING, CubeConstants.ONE))) {
+				throw new IllegalArgumentException("Each tile on a surface must have at least one neighbour!");
+			}
+		} else {
+			throw new IllegalArgumentException("Surfaces must have no empty or flat edge!");
+		}
+	}
+
+	private boolean matchesLoneTile(int edge, int value, int result) {
+		return (edge & value) == result;
+	}
+
+	private boolean allowedEdge(int edge) {
+		return edge != CubeConstants.FLAT_EDGE && edge != CubeConstants.EMPTY_EDGE;
 	}
 
 	private int getStringAsInt(String edge) {
@@ -81,31 +108,16 @@ public class Surface {
 		return top;
 	}
 
-	public void setTop(short top) {
-		this.top = top;
-	}
-
 	public int getBottom() {
 		return bottom;
-	}
-
-	public void setBottom(short bottom) {
-		this.bottom = bottom;
 	}
 
 	public int getLeft() {
 		return left;
 	}
 
-	public void setLeft(short left) {
-		this.left = left;
-	}
-
 	public int getRight() {
 		return right;
 	}
 
-	public void setRight(short right) {
-		this.right = right;
-	}
 }

@@ -12,7 +12,7 @@ public interface CubeService {
 
 	public boolean isVertexMatching(Vertex vertice);
 
-	public void printCube(Cube cube);
+	public void printCube(Cube cube, String fileName);
 
 	public Surface rotateSurfaceRight(Surface surface);
 
